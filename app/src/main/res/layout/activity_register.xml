@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_green_light"
+        tools:context=".MainActivity"
+        >
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toTopOf="@id/regselectimage"
+            app:layout_constraintStart_toStartOf="@id/regselectimage"
+            app:layout_constraintEnd_toEndOf="@id/regselectimage"
+            app:layout_constraintBottom_toBottomOf="@id/regselectimage"
+            android:id="@+id/regselectcicrleimage"/>
+
+        <Button
+            android:id="@+id/regselectimage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="90dp"
+            android:background="@drawable/rounded_select_photo_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:text="Resim Seç"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/regusername"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingLeft="12dp"
+            android:ems="10"
+            app:layout_constraintTop_toBottomOf="@id/regselectimage"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Username"
+            />
+
+        <EditText
+            android:id="@+id/regemail"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@id/regusername"
+            android:paddingLeft="12dp"
+            android:ems="10"
+            android:background="@drawable/rounded_edittext"
+            android:hint="E-mail" />
+
+        <EditText
+            android:id="@+id/regpassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toBottomOf="@id/regemail"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:paddingLeft="12dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Password"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/regbutton"
+            android:background="@drawable/rounded_button"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toBottomOf="@id/regpassword"
+            android:text="REGISTER"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:text=" Bir Hesabın Varmı?"
+            app:layout_constraintTop_toBottomOf="@id/regbutton"
+            android:id="@+id/loginRedirect"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textAlignment="center"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
