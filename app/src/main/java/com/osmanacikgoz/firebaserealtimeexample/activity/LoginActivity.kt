@@ -16,7 +16,6 @@ class LoginActivity : AppCompatActivity(){
         binding.backtoregister.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 }

@@ -9,14 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseRealTimeExample">
-
-        <activity android:name=".activity.RegisterActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".activity.LastetMessageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +17,15 @@
             </intent-filter>
 
         </activity>
+
+        <activity android:name=".activity.RegisterActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".activity.LoginActivity">
 
         </activity>
@@ -32,10 +33,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.LastetMessageActivity"/>
-
         </activity>
         <activity android:name=".activity.ChatLogActivity">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.LastetMessageActivity"/>
         </activity>
     </application>
 

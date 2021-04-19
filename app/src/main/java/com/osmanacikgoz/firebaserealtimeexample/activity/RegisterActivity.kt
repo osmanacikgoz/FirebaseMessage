@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.google.firebase.auth.FirebaseAuth
@@ -26,13 +27,17 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
+
+        binding.progress
+        binding.progress.isInEditMode
+        binding.progress.visibility = View.INVISIBLE
         // database = Firebase.database.reference
         //database.child("User").child("123").setValue("Osman")
 
         binding.regbutton.setOnClickListener {
             userRegister()
+            binding.progress.visibility =View.VISIBLE
         }
         binding.loginRedirect.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -101,7 +106,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun savedUserToFirebaseDatabase(profileImageUrl: String) {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val ref = FirebaseDatabase.getInstance().reference.child("/users/$uid")
-        val user = User(uid, binding.regusername.text.toString(), profileImageUrl)
+        val user = User(uid, profileImageUrl, binding.regusername.text.toString())
         // database = Firebase.database.reference
         //database.child("User").child("123").setValue("Osman")
         ref.setValue(user).addOnCompleteListener {
