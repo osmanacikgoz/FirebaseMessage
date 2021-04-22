@@ -12,13 +12,15 @@ import com.osmanacikgoz.firebaserealtimeexample.R
 import com.osmanacikgoz.firebaserealtimeexample.data.ChatMessage
 import com.osmanacikgoz.firebaserealtimeexample.data.User
 import com.osmanacikgoz.firebaserealtimeexample.databinding.ActivityChatLogBinding
-import com.osmanacikgoz.firebaserealtimeexample.viewholder.ChatFromHolder
-import com.osmanacikgoz.firebaserealtimeexample.viewholder.ChatViewHolder
+import com.osmanacikgoz.firebaserealtimeexample.viewholder.ChatFromHolderRight
+import com.osmanacikgoz.firebaserealtimeexample.viewholder.ChatViewHolderLeft
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 
 class ChatLogActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatLogBinding
+
+    var toUser: User? = null
 
     val adapter = GroupAdapter<ViewHolder>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,9 +29,9 @@ class ChatLogActivity : AppCompatActivity() {
 
         binding.chatLogRecycler.adapter = adapter
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = user?.username
-        // setupDummyData()
+        toUser = intent.getParcelableExtra(NewMessageActivity.USER_KEY)
+
+        supportActionBar?.title = toUser?.username
         listenForMessage()
         binding.chatSendButton.setOnClickListener {
             performSendMessage()
@@ -38,19 +40,24 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun listenForMessage() {
-        val ref = FirebaseDatabase.getInstance().getReference("/message")
+        val fromId = FirebaseAuth.getInstance().uid
+        val toId = toUser?.uid
+
+        val ref = FirebaseDatabase.getInstance().getReference("/user-message/$fromId/$toId")
+
         ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chatMeesage = snapshot.getValue(ChatMessage::class.java)
 
-                if (chatMeesage != null) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java)
 
-                    if (chatMeesage.formId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatViewHolder(chatMeesage.text))
+                if (chatMessage != null) {
+                    if (chatMessage.formId == FirebaseAuth.getInstance().uid) {
+                        val currentUser = LastetMessageActivity.currentUser ?: return
+                        adapter.add(ChatViewHolderLeft(chatMessage.text, currentUser))
                     } else {
-
-
-                        adapter.add(ChatFromHolder(chatMeesage.text))
+                        toUser?.let {
+                            adapter.add(ChatFromHolderRight(chatMessage.text, it))
+                        }
                     }
                 }
 
@@ -81,28 +88,21 @@ class ChatLogActivity : AppCompatActivity() {
         val formId = FirebaseAuth.getInstance().uid
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
         val toId = user?.uid
-
         if (formId == null) return
-        val reference = FirebaseDatabase.getInstance().getReference("/message").push()
-        val chatMessage =
-            ChatMessage(reference.key!!, text, formId, toId!!, System.currentTimeMillis() / 1000)
+        val reference = FirebaseDatabase.getInstance()
+            .getReference("/user-message/$formId/$toId").push()
+
+        val toReference = FirebaseDatabase.getInstance()
+            .getReference("/user-message/$toId/$formId").push()
+
+        val chatMessage = ChatMessage(reference.key!!, text, formId, toId!!, System.currentTimeMillis() / 1000)
         reference.setValue(chatMessage)
             .addOnSuccessListener {
-
+                binding.chatLogMessage.text.clear()
+                 binding.chatLogRecycler.scrollToPosition(adapter.itemCount -1 )
             }
+        toReference.setValue(chatMessage)
     }
 
-    private fun setupDummyData() {
 
-        val adapter = GroupAdapter<ViewHolder>()
-        adapter.add(ChatViewHolder("selam"))
-        adapter.add(ChatFromHolder("selam"))
-        adapter.add(ChatViewHolder("nasılsın"))
-        adapter.add(ChatFromHolder("iyi sen"))
-        adapter.add(ChatViewHolder("iyi ya yuvarlanıyoruz"))
-        adapter.add(ChatFromHolder("sende durumlar nasıl"))
-        adapter.add(ChatViewHolder("aynı işte ne olsun"))
-        adapter.add(ChatFromHolder("hayırlı işler"))
-
-    }
 }
