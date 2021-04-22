@@ -59,6 +59,7 @@ class ChatLogActivity : AppCompatActivity() {
                             adapter.add(ChatFromHolderRight(chatMessage.text, it))
                         }
                     }
+                    binding.chatLogRecycler.scrollToPosition(adapter.itemCount -1)
                 }
 
             }
@@ -102,6 +103,13 @@ class ChatLogActivity : AppCompatActivity() {
                  binding.chatLogRecycler.scrollToPosition(adapter.itemCount -1 )
             }
         toReference.setValue(chatMessage)
+
+        val lastetMessageRef = FirebaseDatabase.getInstance().getReference("/lastest-message/$formId/$toId")
+        lastetMessageRef.setValue(chatMessage )
+
+        val lastetMessageToRef = FirebaseDatabase.getInstance().getReference("/lastest-message/$toId/$formId")
+        lastetMessageToRef.setValue(chatMessage )
+
     }
 
 

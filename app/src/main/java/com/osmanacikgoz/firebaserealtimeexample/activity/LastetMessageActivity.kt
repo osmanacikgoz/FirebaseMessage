@@ -6,44 +6,93 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.osmanacikgoz.firebaserealtimeexample.R
+import com.osmanacikgoz.firebaserealtimeexample.data.ChatMessage
 import com.osmanacikgoz.firebaserealtimeexample.data.User
 import com.osmanacikgoz.firebaserealtimeexample.databinding.ActivityLastetMessageBinding
 import com.osmanacikgoz.firebaserealtimeexample.viewholder.LastetMessageRow
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 
-class LastetMessageActivity: AppCompatActivity() {
+class LastetMessageActivity : AppCompatActivity() {
 
-    companion object{
-        var currentUser :User? =null
+    companion object {
+        var currentUser: User? = null
     }
+
     private lateinit var binding: ActivityLastetMessageBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding =DataBindingUtil.setContentView(this, R.layout.activity_lastet_message)
-        verifyUserisLogined()
-        fetchCurrentUser()
-        setupDummyRows()
-    }
-
-    private  fun setupDummyRows() {
-        val adapter = GroupAdapter<ViewHolder>()
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_lastet_message)
 
         binding.recyclerLastestMessage.adapter = adapter
+        binding.recyclerLastestMessage.addItemDecoration(DividerItemDecoration(this,
+        DividerItemDecoration.VERTICAL))
 
+        adapter.setOnItemClickListener{item, view ->
+            val intent = Intent(this,ChatLogActivity::class.java)
+
+            val row = item as LastetMessageRow
+            row.chatPartnerUser
+            intent.putExtra(NewMessageActivity.USER_KEY, row.chatPartnerUser)
+            startActivity(intent)
+        }
+        verifyUserisLogined()
+        fetchCurrentUser()
+        listenForLastetMessage()
+    }
+
+    val messageMap = HashMap<String,ChatMessage>()
+
+    private  fun refreshRecyclerViewMessage() {
+        adapter.clear()
+        messageMap.values.forEach{
+            adapter.add(LastetMessageRow(it))
+        }
 
     }
 
-    private  fun fetchCurrentUser() {
+
+    private fun listenForLastetMessage() {
+        val fromId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance().getReference("/lastest-message/$fromId")
+        ref.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                messageMap[snapshot.key!!] = chatMessage
+                refreshRecyclerViewMessage()
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val chatMessage = snapshot.getValue(ChatMessage::class.java) ?: return
+                messageMap[snapshot.key!!] = chatMessage
+                refreshRecyclerViewMessage()
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    val adapter = GroupAdapter<ViewHolder>()
+
+
+    private fun fetchCurrentUser() {
         val uid = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
-            .addListenerForSingleValueEvent(object :ValueEventListener{
+            .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     currentUser = snapshot.getValue(User::class.java)
                 }

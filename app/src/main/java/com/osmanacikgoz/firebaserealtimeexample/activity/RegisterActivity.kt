@@ -29,15 +29,12 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_register)
 
-        binding.progress
-        binding.progress.isInEditMode
-        binding.progress.visibility = View.INVISIBLE
         // database = Firebase.database.reference
         //database.child("User").child("123").setValue("Osman")
 
         binding.regbutton.setOnClickListener {
             userRegister()
-            binding.progress.visibility =View.VISIBLE
+
         }
         binding.loginRedirect.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)

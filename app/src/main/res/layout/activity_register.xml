@@ -2,23 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/holo_green_light"
+        >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".MainActivity">
-
-        <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progress"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:outlineAmbientShadowColor="@android:color/holo_blue_light"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/regselectcicrleimage"
@@ -107,5 +100,5 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/regbutton" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </ScrollView>
 </layout>
